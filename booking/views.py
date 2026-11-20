@@ -2,9 +2,11 @@
 
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 from .forms import BookingForm
-from .models import Booking, Master, Rejection, Service
+from .models import Booking, Master, Notification, Rejection, Service
 from .rules import check_booking
 
 
@@ -76,6 +78,16 @@ def booking_create(request):
                     time=data["time"],
                     comment=data["comment"],
                 )
+                # Запись и сообщение сохраняются вместе: при ошибке откатываются оба.
+                Notification.objects.create(
+                    booking=booking,
+                    message=(
+                        f"Создана запись №{booking.id}. Клиент: {booking.client_name}. "
+                        f"Автомобиль: {booking.car}, {booking.plate}. "
+                        f"Услуга: {booking.service.name}. Мастер: {booking.master.name}. "
+                        f"Визит: {booking.date:%d.%m.%Y} в {booking.time:%H:%M}."
+                    ),
+                )
         if reason:
             rid = _reject(request.POST, reason)
             return redirect(f"/bookings/rejected/?id={rid}")
@@ -99,3 +111,20 @@ def booking_rejected(request):
 
 def not_found(request, exception=None):
     return render(request, "404.html", status=404)
+
+
+def notification_list(request):
+    notifications = Notification.objects.select_related("booking")
+    return render(request, "notifications/list.html", {
+        "notifications": notifications,
+    })
+
+
+@require_POST
+def notification_read(request, notification_id):
+    notification = get_object_or_404(Notification, pk=notification_id)
+    # Повторный запрос не меняет время первого прочтения.
+    Notification.objects.filter(pk=notification.pk, status=Notification.STATUS_NEW).update(
+        status=Notification.STATUS_READ, read_at=timezone.now(),
+    )
+    return redirect("notification_list")

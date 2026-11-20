@@ -30,6 +30,7 @@
                     <li class="nav-item"><a href="{% url 'booking_create' %}" class="nav-link{% if p == '/bookings/new/' %} active{% endif %}"{% if p == '/bookings/new/' %} aria-current="page"{% endif %}>Новая запись</a></li>
                     <li class="nav-item"><a href="{% url 'booking_list' %}" class="nav-link{% if p == '/bookings/' or b %} active{% endif %}"{% if p == '/bookings/' or b %} aria-current="page"{% endif %}>Записи</a></li>
                     <li class="nav-item"><a href="{% url 'booking_rejected' %}" class="nav-link{% if p == '/bookings/rejected/' %} active{% endif %}"{% if p == '/bookings/rejected/' %} aria-current="page"{% endif %}>Отказы</a></li>
+                    <li class="nav-item"><a href="{% url 'notification_list' %}" class="nav-link{% if p == '/notifications/' %} active{% endif %}"{% if p == '/notifications/' %} aria-current="page"{% endif %}>Уведомления{% if unread_notifications_count %} <span class="badge rounded-pill text-bg-warning ms-1" aria-label="Непрочитанных уведомлений: {{ unread_notifications_count }}">+{{ unread_notifications_count }}</span>{% endif %}</a></li>
                 </ul>
                 {% endwith %}
                 <span class="version-label ms-lg-4">Версия {{ app_version }}</span>
