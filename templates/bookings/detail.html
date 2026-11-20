@@ -16,7 +16,7 @@
         <dt>Мастер</dt><dd>{{ b.master.name }} — {{ b.master.specialization }}</dd>
         <dt>Дата и время</dt><dd>{{ b.start|date:"d.m.Y" }}, {{ b.start|time:"H:i" }}–{{ b.end|time:"H:i" }}</dd>
         <dt>Комментарий</dt><dd>{{ b.comment|default:"—" }}</dd>
-        <dt>Создана</dt><dd>{{ b.created_at }}</dd>
+        <dt>Создана</dt><dd>{{ b.created_at|date:"d.m.Y H:i" }}</dd>
     </dl>
 </div>
 <a class="btn secondary" href="/bookings/">← Ко всем записям</a>

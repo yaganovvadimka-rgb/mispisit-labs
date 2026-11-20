@@ -1,15 +1,18 @@
-"""Настройки приложения онлайн-записи в автосервис (версия 0.0.2).
+"""Настройки приложения онлайн-записи в автосервис (версия 0.0.3).
 
-База данных пока не подключается: данные хранятся в JSON-файлах папки data/.
+Данные хранятся в PostgreSQL. Адрес базы, логин и пароль приходят
+из переменной окружения DATABASE_URL, которую задаёт docker-compose.yml.
 """
 
 import os
 from pathlib import Path
 
+import dj_database_url
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Учебный проект без учётных записей: ключ нужен только для CSRF-защиты форм.
-SECRET_KEY = "lab2-auto-service-booking-demo-key"
+SECRET_KEY = os.environ.get("SECRET_KEY", "lab3-auto-service-booking-demo-key")
 DEBUG = False
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
 
@@ -33,19 +36,23 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
+                "booking.context_processors.app_info",
             ],
         },
     },
 ]
 
-# Отдельная база появится в следующей работе.
-DATABASES = {}
+if "DATABASE_URL" not in os.environ:
+    raise RuntimeError(
+        "Не задана переменная DATABASE_URL. Запускайте проект через docker compose up -d")
 
-# Папка с демо-данными (услуги, мастера, записи, журнал отказов).
-DATA_DIR = Path(os.environ.get("DATA_DIR", BASE_DIR / "data"))
+DATABASES = {
+    "default": dj_database_url.parse(os.environ["DATABASE_URL"], conn_max_age=60),
+}
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 APP_NAME = "Система онлайн-записи в автосервис"
-APP_VERSION = "0.0.2"
+APP_VERSION = "0.0.3"
 
 LANGUAGE_CODE = "ru"
 TIME_ZONE = "Europe/Ulyanovsk"

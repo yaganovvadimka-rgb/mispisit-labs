@@ -4,7 +4,7 @@ import re
 
 from django import forms
 
-from . import storage
+from .models import Master, Service
 
 PLATE_RE = re.compile(r"^[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}$")
 
@@ -15,8 +15,10 @@ class BookingForm(forms.Form):
     car = forms.CharField(label="Автомобиль (марка и модель)", max_length=100)
     plate = forms.CharField(label="Госномер", max_length=12,
                             help_text="Например: А123ВС73")
-    service = forms.TypedChoiceField(label="Услуга", coerce=int)
-    master = forms.TypedChoiceField(label="Мастер", coerce=int)
+    service = forms.ModelChoiceField(label="Услуга", queryset=Service.objects.all(),
+                                     empty_label="— выберите услугу —")
+    master = forms.ModelChoiceField(label="Мастер", queryset=Master.objects.all(),
+                                    empty_label="— выберите мастера —")
     date = forms.DateField(label="Дата", widget=forms.DateInput(attrs={"type": "date"}))
     time = forms.TimeField(label="Время", widget=forms.TimeInput(attrs={"type": "time", "step": 1800}))
     comment = forms.CharField(label="Комментарий", required=False,
@@ -24,14 +26,10 @@ class BookingForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["service"].choices = [("", "— выберите услугу —")] + [
-            (s["id"], f'{s["name"]} ({s["duration_min"]} мин, от {s["price"]} ₽)')
-            for s in storage.load("services")
-        ]
-        self.fields["master"].choices = [("", "— выберите мастера —")] + [
-            (m["id"], f'{m["name"]} — {m["specialization"]}')
-            for m in storage.load("masters")
-        ]
+        self.fields["service"].label_from_instance = (
+            lambda s: f"{s.name} ({s.duration_min} мин, от {s.price} ₽)")
+        self.fields["master"].label_from_instance = (
+            lambda m: f"{m.name} — {m.specialization}")
 
     def clean_phone(self):
         phone = self.cleaned_data["phone"].strip()
