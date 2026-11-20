@@ -1,50 +1,47 @@
 # Система онлайн-записи в автосервис
 
-Лабораторные работы по дисциплине МиСПИСИТ. Текущая версия — 0.0.3 (лабораторная работа №3: постоянное хранение данных).
+Веб-кабинет сотрудника автосервиса для записи клиентов на обслуживание,
+просмотра записей и причин отказов. Версия приложения: **0.0.4**.
+Лабораторные работы по дисциплине МиСПИСИТ.
 
-Стек: Python 3.13, Django 5.2.19, шаблоны Django, PostgreSQL 16.
-
-Приложение и база запускаются вместе через Docker Compose. Таблицы создаются сами при старте приложения (миграции Django). Записи на обслуживание и журнал отказов после первого запуска пустые. Справочники услуг и мастеров заполняются миграцией, иначе форме нечего предложить.
-
-## Зависимости
-
-| Пакет | Версия | Зачем |
-|---|---|---|
-| Django | 5.2.19 | Фреймворк: маршруты, шаблоны, формы, ORM и миграции |
-| psycopg[binary] | 3.3.9 | Драйвер PostgreSQL для Django |
-| dj-database-url | 3.1.2 | Разбирает адрес базы из переменной `DATABASE_URL` |
-
-## Страницы
-
-| Адрес | Что на странице |
-|---|---|
-| `/` | Главная: название, версия, услуги, переходы к действиям |
-| `/bookings/new/` | Форма записи на обслуживание (создание записи в базе) |
-| `/bookings/` | Список записей из базы (просмотр) |
-| `/bookings/1/` | Карточка одной записи |
-| `/bookings/rejected/` | Отказ в записи и журнал отказов (ошибочный сценарий) |
-
-Пример отказа: создайте запись к мастеру «Петров Сергей», а затем вторую запись к нему на то же время. Система откажет: мастер занят.
+Стек: Python 3.13, Django 5.2.19, Django Templates, Bootstrap 5.3.9,
+HTML/CSS, PostgreSQL 16, Django ORM.
 
 ## Запуск
 
-```text
-Репозиторий: https://github.com/yaganovvadimka-rgb/mispisit-labs
-Ветка: lab3
-Pull Request: https://github.com/yaganovvadimka-rgb/mispisit-labs/pull/3
-Образ: yaganovvadimkargb/mispisit-labs:0.0.3
-Страница образа: https://hub.docker.com/r/yaganovvadimkargb/mispisit-labs
+Репозиторий: [https://github.com/yaganovvadimka-rgb/mispisit-labs](https://github.com/yaganovvadimka-rgb/mispisit-labs)
 
-git clone -b lab3 https://github.com/yaganovvadimka-rgb/mispisit-labs
+Ветка: `lab4`.
+
+Pull Request: [https://github.com/yaganovvadimka-rgb/mispisit-labs/pull/4](https://github.com/yaganovvadimka-rgb/mispisit-labs/pull/4)
+
+Образ: `yaganovvadimkargb/mispisit-labs:0.0.4`.
+
+Страница образа: [https://hub.docker.com/r/yaganovvadimkargb/mispisit-labs](https://hub.docker.com/r/yaganovvadimkargb/mispisit-labs)
+
+Для запуска нужен Docker с поддержкой Docker Compose.
+
+```sh
+git clone -b lab4 https://github.com/yaganovvadimka-rgb/mispisit-labs
 cd mispisit-labs
 docker compose up -d
 ```
 
-После запуска приложение доступно по адресу http://localhost:8080
+После запуска сайт открывается по адресу [http://localhost:8080](http://localhost:8080).
+Структура базы создаётся автоматически миграциями Django. При первом запуске с новым
+томом список записей и журнал отказов пустые, демонстрационные записи не загружаются.
+Справочники услуг и мастеров заполняются автоматически миграцией.
 
-Проверка сохранности записи (без флага `-v`):
+## Страницы
 
-```text
-docker compose down
-docker compose up -d
-```
+| Адрес | Что на странице |
+| --- | --- |
+| [http://localhost:8080/](http://localhost:8080/) | Главная кабинета сотрудника, версия приложения, количество записей и отказов, услуги и переходы к действиям |
+| [http://localhost:8080/bookings/](http://localhost:8080/bookings/) | Список записей на обслуживание: клиент, автомобиль, услуга, мастер, дата, время и статус; до первой записи — пустое состояние с кнопкой создания записи |
+| [http://localhost:8080/bookings/new/](http://localhost:8080/bookings/new/) | Форма записи: данные клиента и автомобиля, услуга, мастер, дата, время и комментарий |
+| `http://localhost:8080/bookings/<id>/` | Карточка записи: данные клиента и автомобиля, услуга, мастер, время визита и статус; вместо `<id>` указывается номер записи |
+| [http://localhost:8080/bookings/rejected/](http://localhost:8080/bookings/rejected/) | Причина отказа и журнал отклонённых попыток: кто, что пытался сделать и почему запись не создана; до первого отказа — пустой журнал |
+
+Данные хранятся в PostgreSQL (сервис `db`, том `dbdata`). После `docker compose down`
+и `docker compose up -d` записи сохраняются. Флаг `-v` у команды `docker compose down`
+удаляет том вместе со всеми данными базы.

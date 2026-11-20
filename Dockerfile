@@ -17,6 +17,9 @@ COPY manage.py entrypoint.sh ./
 COPY config/ ./config/
 COPY booking/ ./booking/
 COPY templates/ ./templates/
+COPY static/ ./static/
+
+RUN DATABASE_URL=postgres://app:app@db:5432/app python manage.py collectstatic --noinput
 
 RUN sed -i 's/\r$//' entrypoint.sh && chmod +x entrypoint.sh
 

@@ -1,16 +1,41 @@
 {% extends "base.html" %}
-{% block title %}Запись на обслуживание{% endblock %}
+{% block title %}Новая запись{% endblock %}
 {% block content %}
-<h1>Запись на обслуживание</h1>
-<div class="card">
-    <p>Заполните данные клиента и автомобиля, выберите услугу, мастера и удобное время.
-       Если мастер в это время занят или время выходит за рабочий день, система откажет в записи
-       и покажет причину.</p>
-    <form method="post" action="/bookings/new/" novalidate>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn" type="submit">Записаться</button>
-        <a class="btn secondary" href="/bookings/">К списку записей</a>
-    </form>
+<p class="eyebrow mb-2">Запись клиента</p>
+<h1 class="mb-2">Запись на обслуживание</h1>
+<p class="text-body-secondary mb-4">Заполните данные клиента и выберите удобное время визита.</p>
+<div class="row g-4 align-items-start">
+    <div class="col-lg-8">
+        <div class="card"><div class="card-body p-4">
+            <form method="post" action="{% url 'booking_create' %}" novalidate>
+                {% csrf_token %}
+                <p class="secondary-text mb-4">Поля со знаком <span class="text-danger">*</span> обязательны.</p>
+                {% if form.non_field_errors %}<div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+                <div class="row g-3">
+                    {% for field in form %}
+                    <div class="{% if field.name == 'comment' %}col-12{% else %}col-md-6{% endif %}">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="text-danger" aria-hidden="true">*</span>{% endif %}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div class="form-text" id="{{ field.id_for_label }}_helptext">{{ field.help_text }}</div>{% endif %}
+                        {% for error in field.errors %}<div class="text-danger mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="d-flex flex-wrap gap-2 border-top mt-4 pt-4">
+                    <button class="btn btn-primary" type="submit">Создать запись</button>
+                    <a class="btn btn-outline-secondary" href="{% url 'booking_list' %}">К списку записей</a>
+                </div>
+            </form>
+        </div></div>
+    </div>
+    <aside class="col-lg-4">
+        <div class="card"><div class="card-body p-4">
+            <h2 class="h5 mb-3">Перед записью</h2>
+            <p class="fw-semibold mb-1">Работаем с 09:00 до 19:00</p>
+            <p class="text-body-secondary">Выберите время с учётом длительности услуги: обслуживание должно завершиться до закрытия.</p>
+            <p class="text-body-secondary">Мастер должен выполнять выбранную услугу и быть свободен на всё время визита.</p>
+            <p class="text-body-secondary mb-0">Если записать клиента не получится, откроется страница с причиной отказа. После этого можно выбрать другое время или мастера.</p>
+        </div></div>
+    </aside>
 </div>
 {% endblock %}

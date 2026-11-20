@@ -1,4 +1,4 @@
-"""Настройки приложения онлайн-записи в автосервис (версия 0.0.3).
+"""Настройки приложения онлайн-записи в автосервис (версия 0.0.4).
 
 Данные хранятся в PostgreSQL. Адрес базы, логин и пароль приходят
 из переменной окружения DATABASE_URL, которую задаёт docker-compose.yml.
@@ -20,10 +20,12 @@ ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 
 INSTALLED_APPS = [
+    "django.contrib.staticfiles",
     "booking",
 ]
 
 MIDDLEWARE = [
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
 ]
@@ -51,8 +53,12 @@ DATABASES = {
 }
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 APP_NAME = "Система онлайн-записи в автосервис"
-APP_VERSION = "0.0.3"
+APP_VERSION = "0.0.4"
 
 LANGUAGE_CODE = "ru"
 TIME_ZONE = "Europe/Ulyanovsk"

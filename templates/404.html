@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Страница не найдена{% endblock %}
 {% block content %}
-<h1>Страница не найдена</h1>
-<div class="alert error">Такой страницы или записи нет. Проверьте адрес или вернитесь к списку записей.</div>
-<a class="btn secondary" href="/bookings/">К списку записей</a>
+<section class="card"><div class="empty-state">
+    <p class="eyebrow mb-2">Ошибка 404</p>
+    <h1 class="mb-3">Страница не найдена</h1>
+    <p class="text-body-secondary mb-4">Такой страницы или записи нет. Вернитесь на главную<br class="d-none d-sm-inline"> или откройте список записей.</p>
+    <div class="d-flex flex-wrap justify-content-center gap-2"><a class="btn btn-primary" href="{% url 'home' %}">На главную</a><a class="btn btn-outline-secondary" href="{% url 'booking_list' %}">К списку записей</a></div>
+</div></section>
 {% endblock %}

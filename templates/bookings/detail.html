@@ -2,22 +2,22 @@
 {% block title %}Запись №{{ b.id }}{% endblock %}
 {% block content %}
 {% if request.GET.created %}
-<div class="alert ok"><strong>Запись создана.</strong> Мастер {{ b.master.name }} ждёт вас
-    {{ b.start|date:"d.m.Y" }} в {{ b.start|time:"H:i" }}.</div>
+<div class="alert alert-success mb-4" role="status"><h2 class="h5 alert-heading">Запись создана</h2><p class="mb-0">Мастер {{ b.master.name }} ждёт клиента {{ b.start|date:"d.m.Y" }} в {{ b.start|time:"H:i" }}.</p></div>
 {% endif %}
-<h1>Запись №{{ b.id }}</h1>
-<div class="card">
-    <dl>
-        <dt>Статус</dt><dd><span class="status {% if b.status == 'Новая' %}new{% elif b.status == 'Подтверждена' %}ok{% endif %}">{{ b.status }}</span></dd>
-        <dt>Клиент</dt><dd>{{ b.client_name }}</dd>
-        <dt>Телефон</dt><dd>{{ b.phone }}</dd>
-        <dt>Автомобиль</dt><dd>{{ b.car }}, госномер {{ b.plate }}</dd>
-        <dt>Услуга</dt><dd>{{ b.service.name }} ({{ b.service.duration_min }} мин, от {{ b.service.price }} ₽)</dd>
-        <dt>Мастер</dt><dd>{{ b.master.name }} — {{ b.master.specialization }}</dd>
-        <dt>Дата и время</dt><dd>{{ b.start|date:"d.m.Y" }}, {{ b.start|time:"H:i" }}–{{ b.end|time:"H:i" }}</dd>
-        <dt>Комментарий</dt><dd>{{ b.comment|default:"—" }}</dd>
-        <dt>Создана</dt><dd>{{ b.created_at|date:"d.m.Y H:i" }}</dd>
+<nav aria-label="Путь к странице"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li><li class="breadcrumb-item"><a href="{% url 'booking_list' %}">Записи</a></li><li class="breadcrumb-item active" aria-current="page">№{{ b.id }}</li></ol></nav>
+<div class="d-flex flex-wrap align-items-center gap-3 mb-4"><h1 class="mb-0">Запись №{{ b.id }}</h1>{% include "bookings/status.html" %}</div>
+<div class="card mb-4"><div class="card-body p-4 p-lg-5">
+    <h2 class="h5 mb-4">Данные визита</h2>
+    <dl class="row record-details mb-0">
+        <dt class="col-sm-4 mb-1 mb-sm-3">Клиент</dt><dd class="col-sm-8 mb-3 fw-semibold">{{ b.client_name }}</dd>
+        <dt class="col-sm-4 mb-1 mb-sm-3">Телефон</dt><dd class="col-sm-8 mb-3">{{ b.phone }}</dd>
+        <dt class="col-sm-4 mb-1 mb-sm-3">Автомобиль</dt><dd class="col-sm-8 mb-3">{{ b.car }} · {{ b.plate }}</dd>
+        <dt class="col-sm-4 mb-1 mb-sm-3">Услуга</dt><dd class="col-sm-8 mb-3">{{ b.service.name }}<br><span class="secondary-text">{{ b.service.duration_min }} мин · от {{ b.service.price }} ₽</span></dd>
+        <dt class="col-sm-4 mb-1 mb-sm-3">Мастер</dt><dd class="col-sm-8 mb-3">{{ b.master.name }}<br><span class="secondary-text">{{ b.master.specialization }}</span></dd>
+        <dt class="col-sm-4 mb-1 mb-sm-3">Дата и время</dt><dd class="col-sm-8 mb-3 fw-semibold">{{ b.start|date:"d.m.Y" }}, {{ b.start|time:"H:i" }}–{{ b.end|time:"H:i" }}</dd>
+        <dt class="col-sm-4 mb-1 mb-sm-3">Комментарий</dt><dd class="col-sm-8 mb-3">{{ b.comment|default:"Не указан"|linebreaksbr }}</dd>
+        <dt class="col-sm-4 mb-1 mb-sm-0">Создана</dt><dd class="col-sm-8 mb-0">{{ b.created_at|date:"d.m.Y H:i" }}</dd>
     </dl>
-</div>
-<a class="btn secondary" href="/bookings/">← Ко всем записям</a>
+</div></div>
+<div class="d-flex flex-wrap gap-2"><a class="btn btn-primary" href="{% url 'booking_list' %}">Все записи</a><a class="btn btn-outline-secondary" href="{% url 'booking_create' %}">Новая запись</a></div>
 {% endblock %}
