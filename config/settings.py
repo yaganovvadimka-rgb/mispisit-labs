@@ -1,4 +1,4 @@
-"""Настройки приложения онлайн-записи в автосервис (версия 0.0.4).
+"""Настройки приложения онлайн-записи в автосервис (версия 0.0.5).
 
 Данные хранятся в PostgreSQL. Адрес базы, логин и пароль приходят
 из переменной окружения DATABASE_URL, которую задаёт docker-compose.yml.
@@ -58,7 +58,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 APP_NAME = "Система онлайн-записи в автосервис"
-APP_VERSION = "0.0.4"
+APP_VERSION = "0.0.5"
 
 LANGUAGE_CODE = "ru"
 TIME_ZONE = "Europe/Ulyanovsk"

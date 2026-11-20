@@ -2,7 +2,7 @@
 {% block title %}Запись №{{ b.id }}{% endblock %}
 {% block content %}
 {% if request.GET.created %}
-<div class="alert alert-success mb-4" role="status"><h2 class="h5 alert-heading">Запись создана</h2><p class="mb-0">Мастер {{ b.master.name }} ждёт клиента {{ b.start|date:"d.m.Y" }} в {{ b.start|time:"H:i" }}.</p></div>
+<div class="alert alert-success mb-4" role="status"><h2 class="h5 alert-heading">Запись создана</h2><p class="mb-2">Мастер {{ b.master.name }} ждёт клиента {{ b.start|date:"d.m.Y" }} в {{ b.start|time:"H:i" }}.</p><a href="{% url 'notification_list' %}#booking-{{ b.id }}" class="alert-link">Перейти к уведомлению о записи №{{ b.id }}</a></div>
 {% endif %}
 <nav aria-label="Путь к странице"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li><li class="breadcrumb-item"><a href="{% url 'booking_list' %}">Записи</a></li><li class="breadcrumb-item active" aria-current="page">№{{ b.id }}</li></ol></nav>
 <div class="d-flex flex-wrap align-items-center gap-3 mb-4"><h1 class="mb-0">Запись №{{ b.id }}</h1>{% include "bookings/status.html" %}</div>

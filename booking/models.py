@@ -1,4 +1,4 @@
-"""Модель данных трёх функций: услуги, мастера, записи на обслуживание, журнал отказов."""
+"""Услуги, мастера, записи на обслуживание, журнал отказов и уведомления."""
 
 from datetime import datetime, timedelta
 
@@ -89,3 +89,26 @@ class Rejection(models.Model):
     class Meta:
         db_table = "rejection"
         ordering = ["-id"]
+
+
+class Notification(models.Model):
+    """Сохранённое уведомление сотруднику об успешной записи клиента."""
+
+    STATUS_NEW = "new"
+    STATUS_READ = "read"
+    STATUS_CHOICES = [(STATUS_NEW, "Новое"), (STATUS_READ, "Прочитано")]
+
+    booking = models.OneToOneField(
+        Booking, on_delete=models.CASCADE, related_name="notification",
+        verbose_name="Запись на обслуживание",
+    )
+    message = models.TextField("Сообщение")
+    created_at = models.DateTimeField("Создано", auto_now_add=True)
+    status = models.CharField(
+        "Статус", max_length=10, choices=STATUS_CHOICES, default=STATUS_NEW,
+    )
+    read_at = models.DateTimeField("Прочитано", null=True, blank=True)
+
+    class Meta:
+        db_table = "notification"
+        ordering = ["-created_at", "-id"]

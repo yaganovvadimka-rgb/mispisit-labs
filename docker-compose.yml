@@ -2,7 +2,7 @@ name: mispisit-yaganov
 
 services:
   app:
-    image: yaganovvadimkargb/mispisit-labs:0.0.4
+    image: yaganovvadimkargb/mispisit-labs:0.0.5
     ports:
       - "8080:8080"
     environment:
