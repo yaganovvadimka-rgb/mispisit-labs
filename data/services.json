@@ -1,0 +1,7 @@
+[
+  {"id": 1, "name": "Плановое ТО", "duration_min": 120, "price": 4500},
+  {"id": 2, "name": "Компьютерная диагностика", "duration_min": 60, "price": 1500},
+  {"id": 3, "name": "Шиномонтаж (4 колеса)", "duration_min": 60, "price": 2400},
+  {"id": 4, "name": "Замена тормозных колодок", "duration_min": 90, "price": 2000},
+  {"id": 5, "name": "Развал-схождение", "duration_min": 60, "price": 1800}
+]

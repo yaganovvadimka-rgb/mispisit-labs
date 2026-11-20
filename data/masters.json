@@ -1,0 +1,5 @@
+[
+  {"id": 1, "name": "Петров Сергей", "specialization": "ТО и диагностика", "service_ids": [1, 2, 4]},
+  {"id": 2, "name": "Иванов Алексей", "specialization": "шиномонтаж и ходовая", "service_ids": [3, 4, 5]},
+  {"id": 3, "name": "Козлов Дмитрий", "specialization": "диагностика и электрика", "service_ids": [2]}
+]

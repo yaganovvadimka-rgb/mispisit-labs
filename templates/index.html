@@ -1,14 +1,35 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Система онлайн-записи в автосервис</title>
-</head>
-<body>
-    <h1>Система онлайн-записи в автосервис</h1>
-    <p>Помогает автовладельцам выбирать услугу и время визита, а сотрудникам автосервиса — управлять записями.</p>
-    <p>Версия 0.0.1</p>
-    <p>Разработка продолжается</p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<h1>Система онлайн-записи в автосервис</h1>
+<p>Помогает автовладельцам выбирать услугу и время визита, а сотрудникам автосервиса — управлять записями.</p>
+
+<div class="actions">
+    <div class="card">
+        <h3>Записаться на обслуживание</h3>
+        <p>Выберите услугу, мастера, дату и время. Система проверит, свободен ли мастер.</p>
+        <a class="btn" href="/bookings/new/">Записаться</a>
+    </div>
+    <div class="card">
+        <h3>Список записей</h3>
+        <p>Все записи на обслуживание: сейчас их {{ bookings_count }}.</p>
+        <a class="btn secondary" href="/bookings/">Открыть список</a>
+    </div>
+    <div class="card">
+        <h3>Журнал отказов</h3>
+        <p>Попытки записи, которые система не приняла, и причина отказа: {{ rejections_count }}.</p>
+        <a class="btn secondary" href="/bookings/rejected/">Открыть журнал</a>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 20px;">
+    <h3 style="margin-top: 0;">Услуги автосервиса</h3>
+    <table>
+        <tr><th>Услуга</th><th>Длительность</th><th>Стоимость</th></tr>
+        {% for s in services %}
+        <tr><td>{{ s.name }}</td><td>{{ s.duration_min }} мин</td><td>от {{ s.price }} ₽</td></tr>
+        {% endfor %}
+    </table>
+    <p style="margin-bottom: 0;">Режим работы: ежедневно с 09:00 до 19:00.</p>
+</div>
+{% endblock %}

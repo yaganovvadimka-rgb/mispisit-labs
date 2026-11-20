@@ -1,8 +1,12 @@
-"""Маршрут первой страницы проекта."""
+"""Корневые маршруты проекта."""
 
-from django.urls import path
-from django.views.generic import TemplateView
+from django.urls import include, path
+
+from booking import views
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="index.html"), name="home"),
+    path("", views.home, name="home"),
+    path("bookings/", include("booking.urls")),
 ]
+
+handler404 = "booking.views.not_found"
