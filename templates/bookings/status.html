@@ -1,0 +1,1 @@
+<span class="badge rounded-pill {% if b.status == 'Новая' %}bg-primary-subtle text-primary-emphasis{% elif b.status == 'Подтверждена' or b.status == 'Выполнена' %}bg-success-subtle text-success-emphasis{% elif b.status == 'В работе' %}bg-warning-subtle text-warning-emphasis{% else %}bg-secondary-subtle text-secondary-emphasis{% endif %}">{{ b.status }}</span>

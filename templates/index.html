@@ -1,36 +1,51 @@
 {% extends "base.html" %}
 {% block title %}Главная{% endblock %}
 {% block content %}
-<h1>Система онлайн-записи в автосервис</h1>
-<p>Помогает автовладельцам выбирать услугу и время визита, а сотрудникам автосервиса — управлять записями.</p>
-<p><strong>Версия {{ app_version }}</strong></p>
-
-<div class="actions">
-    <div class="card">
-        <h3>Записаться на обслуживание</h3>
-        <p>Выберите услугу, мастера, дату и время. Система проверит, свободен ли мастер.</p>
-        <a class="btn" href="/bookings/new/">Записаться</a>
+<section class="hero p-4 p-lg-5 mb-4">
+    <p class="eyebrow mb-2">Кабинет сотрудника автосервиса</p>
+    <h1 class="display-6 mb-3">Каждый визит — по расписанию</h1>
+    <p class="fs-5 text-body-secondary mb-4">Оформляйте запись клиента, выбирайте услугу и мастера. Все визиты и причины отказов собраны в одном месте.</p>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary" href="{% url 'booking_create' %}">Записать клиента</a>
+        <a class="btn btn-outline-primary" href="{% url 'booking_list' %}">Посмотреть записи</a>
     </div>
-    <div class="card">
-        <h3>Список записей</h3>
-        <p>Все записи на обслуживание: сейчас их {{ bookings_count }}.</p>
-        <a class="btn secondary" href="/bookings/">Открыть список</a>
+</section>
+<section class="row g-3 mb-4" aria-label="Основные действия">
+    <div class="col-md-4">
+        <div class="card action-card primary-action h-100"><div class="card-body p-4 d-flex flex-column">
+            <h2 class="h5">Новая запись</h2>
+            <p class="text-body-secondary flex-grow-1">Укажите данные клиента и автомобиля, услугу и время обслуживания.</p>
+            <a class="btn btn-primary align-self-start" href="{% url 'booking_create' %}">Создать запись</a>
+        </div></div>
     </div>
-    <div class="card">
-        <h3>Журнал отказов</h3>
-        <p>Попытки записи, которые система не приняла, и причина отказа: {{ rejections_count }}.</p>
-        <a class="btn secondary" href="/bookings/rejected/">Открыть журнал</a>
+    <div class="col-md-4">
+        <div class="card action-card h-100"><div class="card-body p-4 d-flex flex-column">
+            <h2 class="h5">Записи <span class="badge text-bg-light ms-1">{{ bookings_count }}</span></h2>
+            <p class="text-body-secondary flex-grow-1">Время визита, назначенный мастер и подробная карточка каждого клиента.</p>
+            <a class="btn btn-outline-primary align-self-start" href="{% url 'booking_list' %}">Открыть список</a>
+        </div></div>
     </div>
-</div>
-
-<div class="card" style="margin-top: 20px;">
-    <h3 style="margin-top: 0;">Услуги автосервиса</h3>
-    <table>
-        <tr><th>Услуга</th><th>Длительность</th><th>Стоимость</th></tr>
-        {% for s in services %}
-        <tr><td>{{ s.name }}</td><td>{{ s.duration_min }} мин</td><td>от {{ s.price }} ₽</td></tr>
-        {% endfor %}
-    </table>
-    <p style="margin-bottom: 0;">Режим работы: ежедневно с 09:00 до 19:00.</p>
-</div>
+    <div class="col-md-4">
+        <div class="card action-card h-100"><div class="card-body p-4 d-flex flex-column">
+            <h2 class="h5">Отказы <span class="badge text-bg-light ms-1">{{ rejections_count }}</span></h2>
+            <p class="text-body-secondary flex-grow-1">Отклонённые попытки записи с объяснением причины и временем обращения.</p>
+            <a class="btn btn-outline-primary align-self-start" href="{% url 'booking_rejected' %}">Открыть журнал</a>
+        </div></div>
+    </div>
+</section>
+<section class="card">
+    <div class="card-header p-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <h2 class="h5 mb-0">Услуги автосервиса</h2>
+        <span class="secondary-text">Ежедневно с 09:00 до 19:00</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <caption class="visually-hidden">Доступные услуги, длительность и начальная стоимость</caption>
+            <thead><tr><th scope="col">Услуга</th><th scope="col">Длительность</th><th scope="col" class="text-end">Стоимость</th></tr></thead>
+            <tbody>{% for s in services %}
+            <tr><td class="fw-medium">{{ s.name }}</td><td>{{ s.duration_min }} мин</td><td class="text-end text-nowrap">от {{ s.price }} ₽</td></tr>
+            {% empty %}<tr><td colspan="3" class="text-center text-body-secondary py-4">Список услуг пока не заполнен.</td></tr>{% endfor %}</tbody>
+        </table>
+    </div>
+</section>
 {% endblock %}

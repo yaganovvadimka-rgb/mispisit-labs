@@ -1,35 +1,41 @@
 {% extends "base.html" %}
 {% block title %}Отказ в записи{% endblock %}
 {% block content %}
-<h1>Отказ в записи</h1>
+<p class="eyebrow mb-2">Контроль записи</p>
+<h1 class="mb-2">Отказ в записи</h1>
+<p class="text-body-secondary mb-4">Причины отклонения заявок и история обращений.</p>
 {% if current %}
-<div class="alert error">
-    <p style="margin-top: 0;"><strong>Система не приняла запись (№{{ current.id }} в журнале отказов).</strong></p>
-    <dl>
-        <dt>Кто пытался</dt><dd>{{ current.client_name }}</dd>
-        <dt>Что пытался сделать</dt><dd>{{ current.action }}: «{{ current.service_name }}», мастер {{ current.master_name }}, на {{ current.requested }}</dd>
-        <dt>Почему отказано</dt><dd><strong>{{ current.reason }}</strong></dd>
-        <dt>Когда</dt><dd>{{ current.created_at|date:"d.m.Y H:i" }}</dd>
+<div class="alert alert-danger p-4 mb-4" role="alert">
+    <h2 class="h4 alert-heading">Запись не создана</h2>
+    <p class="fw-semibold mb-3">{{ current.reason }}</p>
+    <hr>
+    <dl class="row mb-0">
+        <dt class="col-md-3 mb-1 mb-md-2">Клиент</dt><dd class="col-md-9 mb-2">{{ current.client_name }}</dd>
+        <dt class="col-md-3 mb-1 mb-md-2">Действие</dt><dd class="col-md-9 mb-2">{{ current.action }}: «{{ current.service_name }}», мастер {{ current.master_name }}</dd>
+        <dt class="col-md-3 mb-1 mb-md-2">Желаемое время</dt><dd class="col-md-9 mb-2">{{ current.requested }}</dd>
+        <dt class="col-md-3 mb-1 mb-md-0">Обращение</dt><dd class="col-md-9 mb-0">№{{ current.id }} · {{ current.created_at|date:"d.m.Y H:i" }}</dd>
     </dl>
 </div>
-<p><a class="btn" href="/bookings/new/">Попробовать записаться снова</a>
-   <a class="btn secondary" href="/bookings/">Посмотреть занятые записи</a></p>
+<div class="d-flex flex-wrap gap-2 mb-4"><a class="btn btn-primary" href="{% url 'booking_create' %}">Заполнить новую запись</a><a class="btn btn-outline-secondary" href="{% url 'booking_list' %}">Посмотреть записи</a></div>
 {% endif %}
-
-<h2>Журнал отказов</h2>
-<table>
-    <tr><th>№</th><th>Когда</th><th>Клиент</th><th>Услуга / мастер</th><th>Желаемое время</th><th>Причина отказа</th></tr>
-    {% for r in rejections %}
-    <tr {% if current and r.id == current.id %}class="highlight"{% endif %}>
-        <td><a href="/bookings/rejected/?id={{ r.id }}">{{ r.id }}</a></td>
-        <td>{{ r.created_at|date:"d.m.Y H:i" }}</td>
-        <td>{{ r.client_name }}</td>
-        <td>{{ r.service_name }}<br><small>{{ r.master_name }}</small></td>
-        <td>{{ r.requested }}</td>
-        <td>{{ r.reason }}</td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="6">Отказов пока не было.</td></tr>
-    {% endfor %}
-</table>
+<section class="card overflow-hidden">
+    <div class="card-header px-4 py-3"><h2 class="h5 mb-0">Журнал отказов</h2></div>
+    {% if rejections %}
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <caption class="visually-hidden">Отклонённые попытки записи с причинами отказа</caption>
+            <thead><tr><th scope="col">№</th><th scope="col">Когда</th><th scope="col">Клиент</th><th scope="col">Услуга и мастер</th><th scope="col">Желаемое время</th><th scope="col">Причина отказа</th></tr></thead>
+            <tbody>{% for r in rejections %}
+            <tr{% if current and r.id == current.id %} class="table-warning"{% endif %}>
+                <td><a href="{% url 'booking_rejected' %}?id={{ r.id }}" aria-label="Открыть отказ номер {{ r.id }}"{% if current and r.id == current.id %} aria-current="true"{% endif %}>{{ r.id }}</a></td>
+                <td class="text-nowrap">{{ r.created_at|date:"d.m.Y" }}<br><span class="secondary-text">{{ r.created_at|date:"H:i" }}</span></td>
+                <td>{{ r.client_name }}</td><td>{{ r.service_name }}<br><span class="secondary-text">{{ r.master_name }}</span></td>
+                <td>{{ r.requested }}</td><td>{{ r.reason }}</td>
+            </tr>{% endfor %}</tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state"><h3 class="h4">Отказов пока не было</h3><p class="text-body-secondary mb-4">Если система не сможет создать запись, здесь появятся<br class="d-none d-sm-inline"> данные обращения и причина отказа.</p><a class="btn btn-outline-primary" href="{% url 'booking_create' %}">Перейти к записи</a></div>
+    {% endif %}
+</section>
 {% endblock %}
