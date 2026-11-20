@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Отказ в записи{% endblock %}
+{% block content %}
+<h1>Отказ в записи</h1>
+{% if current %}
+<div class="alert error">
+    <p style="margin-top: 0;"><strong>Система не приняла запись (№{{ current.id }} в журнале отказов).</strong></p>
+    <dl>
+        <dt>Кто пытался</dt><dd>{{ current.client_name }}</dd>
+        <dt>Что пытался сделать</dt><dd>{{ current.action }}: «{{ current.service }}», мастер {{ current.master }}, на {{ current.requested }}</dd>
+        <dt>Почему отказано</dt><dd><strong>{{ current.reason }}</strong></dd>
+        <dt>Когда</dt><dd>{{ current.created_at }}</dd>
+    </dl>
+</div>
+<p><a class="btn" href="/bookings/new/">Попробовать записаться снова</a>
+   <a class="btn secondary" href="/bookings/">Посмотреть занятые записи</a></p>
+{% endif %}
+
+<h2>Журнал отказов</h2>
+<table>
+    <tr><th>№</th><th>Когда</th><th>Клиент</th><th>Услуга / мастер</th><th>Желаемое время</th><th>Причина отказа</th></tr>
+    {% for r in rejections %}
+    <tr {% if current and r.id == current.id %}class="highlight"{% endif %}>
+        <td><a href="/bookings/rejected/?id={{ r.id }}">{{ r.id }}</a></td>
+        <td>{{ r.created_at }}</td>
+        <td>{{ r.client_name }}</td>
+        <td>{{ r.service }}<br><small>{{ r.master }}</small></td>
+        <td>{{ r.requested }}</td>
+        <td>{{ r.reason }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">Отказов пока не было.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

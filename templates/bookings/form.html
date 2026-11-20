@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Запись на обслуживание{% endblock %}
+{% block content %}
+<h1>Запись на обслуживание</h1>
+<div class="card">
+    <p>Заполните данные клиента и автомобиля, выберите услугу, мастера и удобное время.
+       Если мастер в это время занят или время выходит за рабочий день, система откажет в записи
+       и покажет причину.</p>
+    <form method="post" action="/bookings/new/" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn" type="submit">Записаться</button>
+        <a class="btn secondary" href="/bookings/">К списку записей</a>
+    </form>
+</div>
+{% endblock %}

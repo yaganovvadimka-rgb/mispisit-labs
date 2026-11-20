@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Запись №{{ b.id }}{% endblock %}
+{% block content %}
+{% if request.GET.created %}
+<div class="alert ok"><strong>Запись создана.</strong> Мастер {{ b.master.name }} ждёт вас
+    {{ b.start|date:"d.m.Y" }} в {{ b.start|time:"H:i" }}.</div>
+{% endif %}
+<h1>Запись №{{ b.id }}</h1>
+<div class="card">
+    <dl>
+        <dt>Статус</dt><dd><span class="status {% if b.status == 'Новая' %}new{% elif b.status == 'Подтверждена' %}ok{% endif %}">{{ b.status }}</span></dd>
+        <dt>Клиент</dt><dd>{{ b.client_name }}</dd>
+        <dt>Телефон</dt><dd>{{ b.phone }}</dd>
+        <dt>Автомобиль</dt><dd>{{ b.car }}, госномер {{ b.plate }}</dd>
+        <dt>Услуга</dt><dd>{{ b.service.name }} ({{ b.service.duration_min }} мин, от {{ b.service.price }} ₽)</dd>
+        <dt>Мастер</dt><dd>{{ b.master.name }} — {{ b.master.specialization }}</dd>
+        <dt>Дата и время</dt><dd>{{ b.start|date:"d.m.Y" }}, {{ b.start|time:"H:i" }}–{{ b.end|time:"H:i" }}</dd>
+        <dt>Комментарий</dt><dd>{{ b.comment|default:"—" }}</dd>
+        <dt>Создана</dt><dd>{{ b.created_at }}</dd>
+    </dl>
+</div>
+<a class="btn secondary" href="/bookings/">← Ко всем записям</a>
+{% endblock %}
