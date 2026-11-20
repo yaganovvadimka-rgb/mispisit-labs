@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Записи на обслуживание{% endblock %}
+{% block content %}
+<h1>Записи на обслуживание</h1>
+<p><a class="btn" href="/bookings/new/">+ Новая запись</a></p>
+<table>
+    <tr><th>№</th><th>Дата и время</th><th>Клиент</th><th>Автомобиль</th><th>Услуга</th><th>Мастер</th><th>Статус</th></tr>
+    {% for b in bookings %}
+    <tr>
+        <td><a href="/bookings/{{ b.id }}/">{{ b.id }}</a></td>
+        <td>{{ b.start|date:"d.m.Y" }}<br>{{ b.start|time:"H:i" }}–{{ b.end|time:"H:i" }}</td>
+        <td>{{ b.client_name }}</td>
+        <td>{{ b.car }}<br><small>{{ b.plate }}</small></td>
+        <td><a href="/bookings/{{ b.id }}/">{{ b.service.name }}</a></td>
+        <td>{{ b.master.name }}</td>
+        <td><span class="status {% if b.status == 'Новая' %}new{% elif b.status == 'Подтверждена' %}ok{% endif %}">{{ b.status }}</span></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">Записей пока нет.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
